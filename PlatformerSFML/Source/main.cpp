@@ -88,12 +88,12 @@ int main()
 
         if (PlayerTouchingLeft(player, ablock.Bounds))
         {
-            ablock.Veloctiy.x += player.Veloctiy.x;
+            ablock.Veloctiy.x += player.Veloctiy.x * 0.1f;
             player.Veloctiy.x = 0;
         }
         if (PlayerTouchingRight(player, ablock.Bounds))
         {
-            ablock.Veloctiy.x += player.Veloctiy.x;
+            ablock.Veloctiy.x += player.Veloctiy.x * 0.1f;
             player.Veloctiy.x = 0;
         }
 
