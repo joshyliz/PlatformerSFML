@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Player
+class ABlock
 {
 public:
 	sf::RectangleShape Bounds;
@@ -10,7 +10,6 @@ public:
 	float Speed;
 	float Gravity;
 	float Friction;
-	float JumpHeight;
 	bool isGrounded;
 
 	float Top;
@@ -18,12 +17,11 @@ public:
 	float Right;
 	float Left;
 
-	Player(sf::Vector2f startPosition, sf::Vector2f width_height);
+	ABlock(sf::Vector2f startPosition, sf::Vector2f width_height);
 
 	float GetWidth();
 	float GetHeight();
 
 	void Update(float dt);
-
 };
 

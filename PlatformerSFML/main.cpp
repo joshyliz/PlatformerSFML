@@ -5,6 +5,8 @@
 #include "Global.h"
 #include "Player.h"
 #include "Block.h"
+#include "ABlock.h"
+
 
 int main()
 {
@@ -14,9 +16,11 @@ int main()
     float dt;
     sf::Clock dtClock;
 
-    Player player(sf::Vector2f(100, 100), sf::Vector2f(50, 50));
+    Player player(sf::Vector2f(200, 100), sf::Vector2f(50, 50));
 
-    Block block(sf::Vector2f(0, 500), sf::Vector2f(500, 100));
+    Block block(sf::Vector2f(200, 500), sf::Vector2f(500, 100));
+    
+    ABlock ablock(sf::Vector2f(300, 100), sf::Vector2f(100, 100));
     
     while (window.isOpen())
     {
@@ -72,15 +76,38 @@ int main()
             player.Veloctiy.x = 0;
         if (PlayerTouchingRight(player, block.Bounds))
             player.Veloctiy.x = 0;
-        
+
+        if (ObjectTouchingTop(ablock.Bounds, ablock.Veloctiy, block.Bounds))
+            ablock.Veloctiy.y = 0;
+        if (ObjectTouchingBottom(ablock.Bounds, ablock.Veloctiy, block.Bounds))
+            ablock.Veloctiy.y = 0;
+        if (ObjectTouchingLeft(ablock.Bounds, ablock.Veloctiy, block.Bounds))
+            ablock.Veloctiy.x = 0;
+        if (ObjectTouchingRight(ablock.Bounds, ablock.Veloctiy, block.Bounds))
+            ablock.Veloctiy.x = 0;
+
+        if (PlayerTouchingLeft(player, ablock.Bounds))
+        {
+            ablock.Veloctiy.x += player.Veloctiy.x;
+            player.Veloctiy.x = 0;
+        }
+        if (PlayerTouchingRight(player, ablock.Bounds))
+        {
+            ablock.Veloctiy.x += player.Veloctiy.x;
+            player.Veloctiy.x = 0;
+        }
 
 
+        ablock.Update(dt);
         player.Update(dt);
         //Draw
         window.clear();
-           
+        
+
+        window.draw(ablock.Bounds);
         window.draw(player.Bounds);
         window.draw(block.Bounds);
+        
 
         window.display();
     }

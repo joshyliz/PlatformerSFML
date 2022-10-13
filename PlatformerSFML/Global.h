@@ -9,3 +9,8 @@ bool PlayerTouchingTop(Player player, sf::RectangleShape shape);
 bool PlayerTouchingBottom(Player player, sf::RectangleShape shape);
 bool PlayerTouchingLeft(Player player, sf::RectangleShape shape);
 bool PlayerTouchingRight(Player player, sf::RectangleShape shape);
+
+bool ObjectTouchingTop(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
+bool ObjectTouchingBottom(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
+bool ObjectTouchingLeft(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
+bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
