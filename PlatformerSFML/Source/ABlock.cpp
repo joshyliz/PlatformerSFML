@@ -12,6 +12,14 @@ ABlock::ABlock(sf::Vector2f startPosition, sf::Vector2f width_height)
 	Friction = 7;
 }
 
+ABlock::ABlock()
+{
+	Bounds.setPosition(Position);
+	Speed = 200;
+	Gravity = 50;
+	Friction = 7;
+}
+
 float ABlock::GetWidth()
 {
 	return Bounds.getGlobalBounds().width;

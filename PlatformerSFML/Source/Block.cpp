@@ -12,6 +12,11 @@ Block::Block(sf::Vector2f startPosition, sf::Vector2f width_height)
 	Right = Position.x + GetWidth();
 }
 
+Block::Block()
+{
+	Bounds.setPosition(Position);
+}
+
 float Block::GetWidth()
 {
 	return Bounds.getGlobalBounds().width;

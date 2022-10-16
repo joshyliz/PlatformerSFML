@@ -18,6 +18,7 @@ public:
 	float Left;
 
 	ABlock(sf::Vector2f startPosition, sf::Vector2f width_height);
+	ABlock();
 
 	float GetWidth();
 	float GetHeight();

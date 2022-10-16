@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Player.h"
+#include "Block.h"
+#include "ABlock.h"
 
 sf::Vector2f AddVectors(sf::Vector2f vector1, sf::Vector2f vector2);
 sf::Vector2f VectorZero();
@@ -14,3 +16,7 @@ bool ObjectTouchingTop(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, s
 bool ObjectTouchingBottom(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
 bool ObjectTouchingLeft(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
 bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
+
+void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablock[]);
+
+void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, ABlock ablocks[], const size_t ablockArraySize);

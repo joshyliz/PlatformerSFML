@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Block.h"
 #include "ABlock.h"
+#include "BlockManager.h"
 
 
 int main()
@@ -15,13 +16,20 @@ int main()
 
     float dt;
     sf::Clock dtClock;
+   
+    //Fps Timer
+    float timer = 1;
 
     Player player(sf::Vector2f(200, 100), sf::Vector2f(50, 50));
 
-    Block block(sf::Vector2f(200, 500), sf::Vector2f(500, 100));
-    
-    ABlock ablock(sf::Vector2f(300, 100), sf::Vector2f(100, 100));
-    
+    sf::Texture map;
+    map.loadFromFile("Textures\\map.png");
+
+    BlockManager blockManager;
+
+    //Generate map from image
+    SetBlocks(map, blockManager.blocks, blockManager.ablocks);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -36,6 +44,13 @@ int main()
         //Update
         dt = dtClock.restart().asSeconds();
         
+        timer -= dt;
+        if (timer < 0)
+        {
+            timer = 1;
+            std::cout << "FPS: " << ceil(1 / dt) << "\n";
+        }
+
         /* 
         
         Poopy Shitty Code
@@ -65,49 +80,14 @@ int main()
 
         */
 
-        if (PlayerTouchingTop(player, block.Bounds))
-        {
-            player.isGrounded = true;
-            player.Veloctiy.y = 0;
-        }
-        if (PlayerTouchingBottom(player, block.Bounds))
-            player.Veloctiy.y = 0;
-        if (PlayerTouchingLeft(player, block.Bounds))
-            player.Veloctiy.x = 0;
-        if (PlayerTouchingRight(player, block.Bounds))
-            player.Veloctiy.x = 0;
-
-        if (ObjectTouchingTop(ablock.Bounds, ablock.Veloctiy, block.Bounds))
-            ablock.Veloctiy.y = 0;
-        if (ObjectTouchingBottom(ablock.Bounds, ablock.Veloctiy, block.Bounds))
-            ablock.Veloctiy.y = 0;
-        if (ObjectTouchingLeft(ablock.Bounds, ablock.Veloctiy, block.Bounds))
-            ablock.Veloctiy.x = 0;
-        if (ObjectTouchingRight(ablock.Bounds, ablock.Veloctiy, block.Bounds))
-            ablock.Veloctiy.x = 0;
-
-        if (PlayerTouchingLeft(player, ablock.Bounds))
-        {
-            ablock.Veloctiy.x += player.Veloctiy.x * 0.1f;
-            player.Veloctiy.x = 0;
-        }
-        if (PlayerTouchingRight(player, ablock.Bounds))
-        {
-            ablock.Veloctiy.x += player.Veloctiy.x * 0.1f;
-            player.Veloctiy.x = 0;
-        }
-
-
-        ablock.Update(dt);
+        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
+        blockManager.Update(dt);
         player.Update(dt);
         //Draw
         window.clear();
         
-
-        window.draw(ablock.Bounds);
         window.draw(player.Bounds);
-        window.draw(block.Bounds);
-        
+        blockManager.Draw(window);
 
         window.display();
     }

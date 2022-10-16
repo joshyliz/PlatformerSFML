@@ -10,7 +10,7 @@ Player::Player(sf::Vector2f startPosition, sf::Vector2f width_height)
 	Speed = 200;
 	Gravity = 50;
 	Friction = 7;
-	JumpHeight = 2000;
+	JumpHeight = 1000;
 }
 
 float Player::GetWidth()

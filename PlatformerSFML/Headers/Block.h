@@ -14,6 +14,8 @@ public:
 
 	Block(sf::Vector2f startPosition, sf::Vector2f width_height);
 
+	Block();
+
 	float GetWidth();
 	float GetHeight();
 };
