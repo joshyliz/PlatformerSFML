@@ -20,3 +20,7 @@ bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity,
 void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablock[]);
 
 void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, ABlock ablocks[], const size_t ablockArraySize);
+
+void ABlockCollision(ABlock& ablock1, ABlock& ablock2);
+
+

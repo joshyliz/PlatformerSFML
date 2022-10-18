@@ -22,6 +22,8 @@ int main()
 
     Player player(sf::Vector2f(200, 100), sf::Vector2f(50, 50));
 
+    sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
+
     sf::Texture map;
     map.loadFromFile("Textures\\map.png");
 
@@ -80,12 +82,15 @@ int main()
 
         */
 
+        camera.setCenter(sf::Vector2f(player.Position.x, player.Position.y));
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         blockManager.Update(dt);
         player.Update(dt);
+
         //Draw
         window.clear();
-        
+        window.setView(camera);
+
         window.draw(player.Bounds);
         blockManager.Draw(window);
 

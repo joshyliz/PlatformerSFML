@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Block.h"
 #include "ABlock.h"
+#include "BlockManager.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -146,6 +147,8 @@ bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity,
     else return false;
 }
 
+//Map Generation And Collsion
+
 void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[])
 {
     //Generate map from image
@@ -157,7 +160,6 @@ void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[])
     int blocksHeight = 64;//64
     
     int blockIndex = 0;
-    int ablockIndex = 0;
 
     int debugCount = 0;
 
@@ -188,12 +190,23 @@ void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[])
             blocks[blockIndex].Bounds.setPosition(blocks[blockIndex].Position);
             blockIndex++;
         }
-        else if (color == sf::Color::White)
+        else if (color == sf::Color(255, 0, 0))
         {
-            ablocks[ablockIndex].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
-            ablocks[ablockIndex].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
-            ablocks[ablockIndex].Bounds.setPosition(ablocks[ablockIndex].Position);
-            ablockIndex++;
+            ablocks[BlockManager::Red].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            ablocks[BlockManager::Red].Bounds.setPosition(ablocks[BlockManager::Red].Position);
+        }
+        else if (color == sf::Color(6, 134, 41))
+        {
+            ablocks[BlockManager::Green].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            ablocks[BlockManager::Green].Bounds.setPosition(ablocks[BlockManager::Green].Position);
+        }
+        else if (color == sf::Color(0, 86, 255))
+        {
+            ablocks[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            ablocks[BlockManager::Blue].Bounds.setPosition(ablocks[BlockManager::Blue].Position);
         }
        
     }
@@ -219,19 +232,19 @@ void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, 
             player.Veloctiy.x = 0;
 
     }
-
+   
     for (size_t i = 0; i < ablockArraySize; i++)
     {
         ABlock* ablock = &ablocks[i];
-        
+
         if (PlayerTouchingLeft(player, ablock->Bounds))
         {
-            ablock->Veloctiy.x += player.Veloctiy.x * 0.1f;
+            ablock->Veloctiy.x += player.Veloctiy.x;
             player.Veloctiy.x = 0;
         }
         if (PlayerTouchingRight(player, ablock->Bounds))
         {
-            ablock->Veloctiy.x += player.Veloctiy.x * 0.1f;
+            ablock->Veloctiy.x += player.Veloctiy.x;
             player.Veloctiy.x = 0;
         }
         if (PlayerTouchingTop(player, ablock->Bounds))
@@ -239,6 +252,12 @@ void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, 
             player.isGrounded = true;
             player.Veloctiy.y = 0;
         }
+        if (PlayerTouchingBottom(player, ablock->Bounds))
+        {
+            player.isGrounded = true;
+            player.Veloctiy.y = 0;
+        }
+
 
         for (size_t j = 0; j < blockArraySize; j++)
         {
@@ -246,18 +265,69 @@ void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, 
             auto block = blocks[j];
 
             if (ObjectTouchingTop(ablock->Bounds, ablock->Veloctiy, block.Bounds))
+            {
                 ablock->Veloctiy.y = 0;
+            }
 
             if (ObjectTouchingBottom(ablock->Bounds, ablock->Veloctiy, block.Bounds))
+            {
                 ablock->Veloctiy.y = 0;
+            }
 
             if (ObjectTouchingLeft(ablock->Bounds, ablock->Veloctiy, block.Bounds))
+            {
                 ablock->Veloctiy.x = 0;
+            }
+            else if (ObjectTouchingRight(ablock->Bounds, ablock->Veloctiy, block.Bounds))
+            {
+                ablock->Veloctiy.x = 0;
+            }
+            else
+            {
+                ABlockCollision(ablocks[BlockManager::Green], ablocks[BlockManager::Blue]);
+                ABlockCollision(ablocks[BlockManager::Red], ablocks[BlockManager::Blue]);
+                ABlockCollision(ablocks[BlockManager::Red], ablocks[BlockManager::Green]);
+            }
 
-            if (ObjectTouchingRight(ablock->Bounds, ablock->Veloctiy, block.Bounds))
-                ablock->Veloctiy.x = 0;
+        }
+    }
+  
+}
+
+
+void ABlockCollision(ABlock& ablock1, ABlock& ablock2)
+{
+
+    if (ObjectTouchingTop(ablock1.Bounds, ablock1.Veloctiy, ablock2.Bounds))
+    {
+        ablock1.Veloctiy.y = 0;
+    }
+
+    if (ObjectTouchingRight(ablock1.Bounds, ablock1.Veloctiy, ablock2.Bounds))
+    {
+        if (-ablock1.Veloctiy.x > ablock2.Veloctiy.x)
+        {
+            ablock1.Veloctiy.x = 0;
+        }
+        else 
+        {
+            ablock2.Veloctiy.x = 0;
         }
 
-      }
+    }
 
+    if (ObjectTouchingLeft(ablock1.Bounds, ablock1.Veloctiy, ablock2.Bounds))
+    {
+        if (ablock1.Veloctiy.x > -ablock2.Veloctiy.x)
+        {
+            ablock1.Veloctiy.x = 0;
+        }
+        else
+        {
+            ablock2.Veloctiy.x = 0;
+        }
+
+    }
 }
+
+

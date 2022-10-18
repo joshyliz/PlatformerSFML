@@ -3,6 +3,13 @@
 #include "ABlock.h"
 #include "Block.h"
 
+BlockManager::BlockManager()
+{
+	ablocks[Red].Bounds.setFillColor(sf::Color::Red);
+	ablocks[Green].Bounds.setFillColor(sf::Color::Green);
+	ablocks[Blue].Bounds.setFillColor(sf::Color::Blue);
+}
+
 void BlockManager::Update(float dt)
 {
 	for (size_t i = 0; i < ABLOCK_SIZE; i++)
