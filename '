@@ -7,7 +7,6 @@
 #include "Block.h"
 #include "ABlock.h"
 #include "BlockManager.h"
-#include "Animation.h"
 
 
 int main()
@@ -24,30 +23,22 @@ int main()
 
     sf::Shader fShader;
 
-    Player player(sf::Vector2f(0, 0), sf::Vector2f(32, 32));
+    Player player(sf::Vector2f(200, 100), sf::Vector2f(50, 50));
 
-    fShader.loadFromFile("Shaders\\fShader.frag", sf::Shader::Fragment);
+    fShader.loadFromFile("fShader.frag", sf::Shader::Fragment);
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
-    float zoom = 1;
 
     sf::Texture map;
     map.loadFromFile("Textures\\map.png");
+    player.Bounds.setTexture(&map);
 
-    //Textures
-    sf::Texture playerIdle;
-    playerIdle.loadFromFile("Textures\\LittleGuyIdle.png");
-    sf::Texture walkSpriteSheet;
-    walkSpriteSheet.loadFromFile("Textures\\LittleWalkAnim.png");
-
-    //Animations
-    Animation walkAnimation(walkSpriteSheet, 1, 4);
 
     BlockManager blockManager;
 
     //Generate map from image
-    SetBlocks(map, blockManager.blocks, blockManager.ablocks, 64, 64);
+    SetBlocks(map, blockManager.blocks, blockManager.ablocks);
 
     while (window.isOpen())
     {
@@ -56,13 +47,13 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
+            
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 window.close();
         }
         //Update
         dt = dtClock.restart().asSeconds();
-
+        
         timer -= dt;
         if (timer < 0)
         {
@@ -70,8 +61,8 @@ int main()
             std::cout << "FPS: " << ceil(1 / dt) << "\n";
         }
 
-        /*
-
+        /* 
+        
         Poopy Shitty Code
 
         if (Bottom + playerVelocity.y * dt > floor.getGlobalBounds().top && Right > floor.getGlobalBounds().left && Left < floor.getGlobalBounds().left + floor.getGlobalBounds().width
@@ -88,7 +79,7 @@ int main()
             && Bottom > fTop && Top < fBottom)
             playerVelocity.x = 0;
 
-        if (Left + playerVelocity.x * dt < fRight && Right > fRight
+        if (Left + playerVelocity.x * dt < fRight && Right > fRight 
             && Bottom > fTop && Top < fBottom)
             playerVelocity.x = 0;
 
@@ -99,29 +90,22 @@ int main()
 
         */
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            zoom -= 1 * dt;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            zoom += 1 * dt;
-
-        camera.zoom(zoom);
-
-        zoom = 1;
-    
         camera.setCenter(sf::Vector2f(player.Position.x, player.Position.y));
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         blockManager.Update(dt);
         player.Update(dt);
-        walkAnimation.Update(dt, true, player.Position);
 
         //Draw
-        window.clear();
+        window.clear(sf::Color::White);
         window.setView(camera);
+
         blockManager.Draw(window);
-        walkAnimation.Draw(window, false);
+
+        window.draw(player.Bounds, &fShader);
 
         window.display();
     }
 
     return 0;
 }
+

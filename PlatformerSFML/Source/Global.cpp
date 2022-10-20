@@ -149,69 +149,56 @@ bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity,
 
 //Map Generation And Collsion
 
-void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[])
+void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight)
 {
     //Generate map from image
-    int y = 0;
-    int x = 0;
-    int wrapTimes = 1;
-
-    int blocksWidth = 64;//64
-    int blocksHeight = 64;//64
     
     int blockIndex = 0;
 
-    int debugCount = 0;
+    for (size_t i = 0; i < Tmap.getSize().y; i++)
+    {
+        SetBlockStrip(Tmap, blocks, ablocks, blocksWidth, blocksWidth, i, blockIndex);
+    }
+   
+}
 
-    sf::Color color;
-    
+void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight, int y, int& blockIndex)
+{
     sf::Image map = Tmap.copyToImage();
+    const size_t length = map.getSize().x;
 
-    size_t length = map.getSize().x * map.getSize().y;
     for (size_t i = 0; i < length; i++)
     {
-        color = map.getPixel(x, y);
-
-        if (i == map.getSize().x * wrapTimes)
-        {
-            x = 0;
-            y++;
-            wrapTimes++;
-        }
-        else
-        {
-            x++;
-        }
+        auto color = map.getPixel(i, y);
 
         if (color == sf::Color::Black)
         {
-            blocks[blockIndex].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            blocks[blockIndex].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
             blocks[blockIndex].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
             blocks[blockIndex].Bounds.setPosition(blocks[blockIndex].Position);
             blockIndex++;
         }
         else if (color == sf::Color(255, 0, 0))
         {
-            ablocks[BlockManager::Red].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
             ablocks[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
             ablocks[BlockManager::Red].Bounds.setPosition(ablocks[BlockManager::Red].Position);
         }
         else if (color == sf::Color(6, 134, 41))
         {
-            ablocks[BlockManager::Green].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
             ablocks[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
             ablocks[BlockManager::Green].Bounds.setPosition(ablocks[BlockManager::Green].Position);
         }
         else if (color == sf::Color(0, 86, 255))
         {
-            ablocks[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * x - blocksWidth, blocksHeight * y);
+            ablocks[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
             ablocks[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
             ablocks[BlockManager::Blue].Bounds.setPosition(ablocks[BlockManager::Blue].Position);
         }
-       
     }
-
 }
+
 
 void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, ABlock ablocks[], const size_t ablockArraySize)
 {
@@ -328,6 +315,11 @@ void ABlockCollision(ABlock& ablock1, ABlock& ablock2)
         }
 
     }
+}
+
+sf::Vector2f GetCenterBounds(sf::FloatRect rect)
+{
+    return sf::Vector2f(rect.left + rect.width / 2, rect.top + rect.height / 2);
 }
 
 

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\BlockManager.cpp" />
     <ClCompile Include="Source\ABlock.cpp" />
     <ClCompile Include="Source\Block.cpp" />
@@ -158,8 +159,10 @@
     <None Include="sfml-system-d-2.dll" />
     <None Include="sfml-window-2.dll" />
     <None Include="sfml-window-d-2.dll" />
+    <None Include="Shaders\fShader.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Animation.h" />
     <ClInclude Include="Headers\BlockManager.h" />
     <ClInclude Include="Headers\ABlock.h" />
     <ClInclude Include="Headers\Global.h" />

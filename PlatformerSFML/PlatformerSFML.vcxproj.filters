@@ -36,6 +36,9 @@
     <ClCompile Include="Source\BlockManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="openal32.dll">
@@ -71,12 +74,12 @@
     <None Include="sfml-window-d-2.dll">
       <Filter>Bin</Filter>
     </None>
+    <None Include="Shaders\fShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Block.h">
@@ -86,6 +89,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\BlockManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

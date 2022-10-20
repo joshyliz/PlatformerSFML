@@ -17,10 +17,13 @@ bool ObjectTouchingBottom(sf::RectangleShape shape1, sf::Vector2f shape1Velocity
 bool ObjectTouchingLeft(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
 bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity, sf::RectangleShape shape2);
 
-void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablock[]);
+void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight);
+
+void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight, int y, int& blockIndex);
 
 void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, ABlock ablocks[], const size_t ablockArraySize);
 
 void ABlockCollision(ABlock& ablock1, ABlock& ablock2);
 
+sf::Vector2f GetCenterBounds(sf::FloatRect rect);
 
