@@ -3,8 +3,13 @@
 #include "ABlock.h"
 #include "Block.h"
 
-BlockManager::BlockManager()
+BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture)
 {
+	for (size_t i = 0; i < BLOCKS_SIZE; i++)
+	{
+		blocks[i].Bounds.setTexture(&BlockTexture);
+	}
+
 	ablocks[Red].Bounds.setFillColor(sf::Color::Red);
 	ablocks[Green].Bounds.setFillColor(sf::Color::Green);
 	ablocks[Blue].Bounds.setFillColor(sf::Color::Blue);

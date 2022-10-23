@@ -5,15 +5,16 @@ class Animation
 {
 public:
 	float timer;
-	int fps;
+	float fps;
 	int amountOfFrames;
 	int frameCount = 0;
 	int frameWidth;
+	bool canDraw;
 	sf::Texture spriteSheet;
 	sf::RectangleShape drawShape;
 	sf::IntRect drawRectangle;
 
-	Animation(sf::Texture& spriteSheet, int fps, int amountOfFrames);
+	Animation(sf::Texture& spriteSheet, float fps, int amountOfFrames);
 
 	void Update(float dt, bool playAnimation, sf::Vector2f Position);
 

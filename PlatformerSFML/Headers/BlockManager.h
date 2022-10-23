@@ -15,7 +15,7 @@ public:
 		 Blue = 2,
 	 };
 
-	 BlockManager();
+	 BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture);
 
 	 const short BLOCKS_SIZE = sizeof(blocks) / sizeof(blocks[0]);
 	 const short ABLOCK_SIZE = sizeof(ablocks) / sizeof(ablocks[0]);

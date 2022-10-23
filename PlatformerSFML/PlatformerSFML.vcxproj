@@ -146,6 +146,7 @@
     <ClCompile Include="Source\Global.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\Trigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="openal32.dll" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Headers\Global.h" />
     <ClInclude Include="Headers\Block.h" />
     <ClInclude Include="Headers\Player.h" />
+    <ClInclude Include="Headers\Triggers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,8 +23,11 @@ int main()
 
 
     sf::Shader fShader;
+    fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     Player player(sf::Vector2f(0, 0), sf::Vector2f(32, 32));
+    sf::RectangleShape fakePlayerShape = player.Bounds;
+    bool playerGrounded = false;
 
     fShader.loadFromFile("Shaders\\fShader.frag", sf::Shader::Fragment);
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
@@ -40,12 +43,16 @@ int main()
     playerIdle.loadFromFile("Textures\\LittleGuyIdle.png");
     sf::Texture walkSpriteSheet;
     walkSpriteSheet.loadFromFile("Textures\\LittleWalkAnim.png");
+    sf::Texture BlockTex;
+    BlockTex.loadFromFile("Textures\\Block.png");
+    
 
     //Animations
-    Animation walkAnimation(walkSpriteSheet, 1, 4);
+    Animation walkRightAnimation(walkSpriteSheet, 0.2f, 4);
+    Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
 
-    BlockManager blockManager;
-
+    BlockManager blockManager(BlockTex, BlockTex);
+    
     //Generate map from image
     SetBlocks(map, blockManager.blocks, blockManager.ablocks, 64, 64);
 
@@ -70,35 +77,6 @@ int main()
             std::cout << "FPS: " << ceil(1 / dt) << "\n";
         }
 
-        /*
-
-        Poopy Shitty Code
-
-        if (Bottom + playerVelocity.y * dt > floor.getGlobalBounds().top && Right > floor.getGlobalBounds().left && Left < floor.getGlobalBounds().left + floor.getGlobalBounds().width
-            && Top <= floor.getGlobalBounds().top)
-        {
-                   playerVelocity.y = 0;
-        }
-
-        if (Top + playerVelocity.y * dt < fBottom && Bottom > fBottom
-            && Right > floor.getGlobalBounds().left && Left < floor.getGlobalBounds().left + floor.getGlobalBounds().width)
-            playerVelocity.y = 0;
-
-        if (Right + playerVelocity.x * dt > fLeft && Left < fLeft
-            && Bottom > fTop && Top < fBottom)
-            playerVelocity.x = 0;
-
-        if (Left + playerVelocity.x * dt < fRight && Right > fRight
-            && Bottom > fTop && Top < fBottom)
-            playerVelocity.x = 0;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGrounded == true)
-        {
-            playerVelocity.y = -1100;
-        }
-
-        */
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             zoom -= 1 * dt;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -107,18 +85,52 @@ int main()
         camera.zoom(zoom);
 
         zoom = 1;
-    
+
         camera.setCenter(sf::Vector2f(player.Position.x, player.Position.y));
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         blockManager.Update(dt);
+        playerGrounded = player.isGrounded;
         player.Update(dt);
-        walkAnimation.Update(dt, true, player.Position);
+        walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
+        walkLeftAnimation.Update(dt, player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A) && playerGrounded == true, player.Position);
+
+        fakePlayerShape = player.Bounds;
 
         //Draw
         window.clear();
         window.setView(camera);
         blockManager.Draw(window);
-        walkAnimation.Draw(window, false);
+        walkLeftAnimation.Draw(window, true);
+        walkRightAnimation.Draw(window, false);
+
+        if (playerGrounded == false && player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        {
+            fakePlayerShape.setTexture(&walkSpriteSheet);
+            fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
+            window.draw(fakePlayerShape);
+        }
+        else if (playerGrounded == false && player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            fakePlayerShape.setTexture(&walkSpriteSheet);
+            fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
+            fakePlayerShape.setScale(sf::Vector2f(-1, 1));
+            fakePlayerShape.setPosition(sf::Vector2f(fakePlayerShape.getPosition().x + 32, fakePlayerShape.getPosition().y));
+
+            window.draw(fakePlayerShape);
+        }
+        else if (playerGrounded == false && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+            && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            fakePlayerShape.setTexture(&playerIdle);
+            window.draw(fakePlayerShape);
+        }
+        else if (playerGrounded == true && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+            && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            fakePlayerShape.setTexture(&playerIdle);
+            window.draw(fakePlayerShape, &fShader);
+        }
+
 
         window.display();
     }
