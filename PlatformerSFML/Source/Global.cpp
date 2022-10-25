@@ -242,6 +242,7 @@ void BlockCollsion(Player& player, Block blocks[], const size_t blockArraySize, 
         if (PlayerTouchingBottom(player, ablock->Bounds))
         {
             player.isGrounded = true;
+            ablock->Veloctiy.y = 0;
             player.Veloctiy.y = 0;
         }
 

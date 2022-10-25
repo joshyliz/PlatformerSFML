@@ -21,7 +21,6 @@ int main()
     //Fps Timer
     float timer = 1;
 
-
     sf::Shader fShader;
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
@@ -45,13 +44,15 @@ int main()
     walkSpriteSheet.loadFromFile("Textures\\LittleWalkAnim.png");
     sf::Texture BlockTex;
     BlockTex.loadFromFile("Textures\\Block.png");
+    sf::Texture ABlockTex;
+    ABlockTex.loadFromFile("Textures\\ABlock.png");
     
 
     //Animations
     Animation walkRightAnimation(walkSpriteSheet, 0.2f, 4);
     Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
 
-    BlockManager blockManager(BlockTex, BlockTex);
+    BlockManager blockManager(BlockTex, ABlockTex);
     
     //Generate map from image
     SetBlocks(map, blockManager.blocks, blockManager.ablocks, 64, 64);
@@ -86,7 +87,7 @@ int main()
 
         zoom = 1;
 
-        camera.setCenter(sf::Vector2f(player.Position.x, player.Position.y));
+        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         blockManager.Update(dt);
         playerGrounded = player.isGrounded;

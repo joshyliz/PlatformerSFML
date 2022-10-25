@@ -13,6 +13,12 @@ BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture
 	ablocks[Red].Bounds.setFillColor(sf::Color::Red);
 	ablocks[Green].Bounds.setFillColor(sf::Color::Green);
 	ablocks[Blue].Bounds.setFillColor(sf::Color::Blue);
+
+	for (size_t i = 0; i < ABLOCK_SIZE; i++)
+	{
+		ablocks[i].Bounds.setTexture(&ABlockTexture);
+	}
+
 }
 
 void BlockManager::Update(float dt)
