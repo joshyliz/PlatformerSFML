@@ -1,10 +1,17 @@
 uniform sampler2D texture;
+uniform float x;
+uniform float y;
+uniform float z;
 
 void main()
 {
-    // lookup the pixel in the texture
-    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+	vec2 resolution = vec2(1280, 720);
+    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy * x);
+	vec2 coord = gl_FragCoord.xy / resolution;
 
-    // multiply it by the color
-    gl_FragColor = gl_Color * pixel;
+	vec4 color = vec4(x, y, z, 1);
+	color.r += sin(coord.x * 90.0);
+	color.g += cos(coord.y * 90.0);
+
+    gl_FragColor =  color * pixel;	
 }

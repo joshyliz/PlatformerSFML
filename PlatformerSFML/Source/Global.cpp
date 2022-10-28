@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "ABlock.h"
 #include "BlockManager.h"
+#include "Triggers.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -149,7 +150,7 @@ bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity,
 
 //Map Generation And Collsion
 
-void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight)
+void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], Trigger triggers[], int blocksWidth, int blocksHeight)
 {
     //Generate map from image
     
@@ -157,12 +158,12 @@ void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWi
 
     for (size_t i = 0; i < Tmap.getSize().y; i++)
     {
-        SetBlockStrip(Tmap, blocks, ablocks, blocksWidth, blocksWidth, i, blockIndex);
+        SetBlockStrip(Tmap, blocks, ablocks, triggers, blocksWidth, blocksWidth, i, blockIndex);
     }
    
 }
 
-void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int blocksWidth, int blocksHeight, int y, int& blockIndex)
+void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], Trigger triggers[], int blocksWidth, int blocksHeight, int y, int& blockIndex)
 {
     sf::Image map = Tmap.copyToImage();
     const size_t length = map.getSize().x;
@@ -196,6 +197,26 @@ void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], int bloc
             ablocks[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
             ablocks[BlockManager::Blue].Bounds.setPosition(ablocks[BlockManager::Blue].Position);
         }
+        else if (color == sf::Color(212, 36, 36))
+        {
+            triggers[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            triggers[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            triggers[BlockManager::Red].Bounds.setPosition(triggers[BlockManager::Red].Position);
+        }
+        else if (color == sf::Color(38, 136, 65))
+        {
+            triggers[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            triggers[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            triggers[BlockManager::Green].Bounds.setPosition(triggers[BlockManager::Green].Position);
+        }
+        else if (color == sf::Color(58, 125, 255))
+        {
+            triggers[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            triggers[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            triggers[BlockManager::Blue].Bounds.setPosition(triggers[BlockManager::Blue].Position);
+        }
+
+
     }
 }
 

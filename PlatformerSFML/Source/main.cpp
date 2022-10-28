@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 //My Headers
 #include "Global.h"
@@ -8,6 +9,7 @@
 #include "ABlock.h"
 #include "BlockManager.h"
 #include "Animation.h"
+#include "Triggers.h"
 
 
 int main()
@@ -22,7 +24,7 @@ int main()
     float timer = 1;
 
     sf::Shader fShader;
-    fShader.setUniform("texture", sf::Shader::CurrentTexture);
+    //fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     Player player(sf::Vector2f(0, 0), sf::Vector2f(32, 32));
     sf::RectangleShape fakePlayerShape = player.Bounds;
@@ -53,9 +55,10 @@ int main()
     Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
 
     BlockManager blockManager(BlockTex, ABlockTex);
+    bool triggersCheck = false;
     
     //Generate map from image
-    SetBlocks(map, blockManager.blocks, blockManager.ablocks, 64, 64);
+    SetBlocks(map, blockManager.blocks, blockManager.ablocks, blockManager.triggers, 64, 64);
 
     while (window.isOpen())
     {
@@ -71,11 +74,16 @@ int main()
         //Update
         dt = dtClock.restart().asSeconds();
 
+        fShader.setUniform("x", sf::Mouse::getPosition().x * 0.001f);
+        fShader.setUniform("y", sf::Mouse::getPosition().y * 0.001f);
+        fShader.setUniform("z", timer);
+
+
         timer -= dt;
         if (timer < 0)
         {
             timer = 1;
-            std::cout << "FPS: " << ceil(1 / dt) << "\n";
+            std::cout << "FPS: " << ceil(1 / dt) << "\n";            
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -87,9 +95,14 @@ int main()
 
         zoom = 1;
 
+        if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
+            && blockManager.triggers[BlockManager::Blue].isTriggered == true)
+            std::cout << "True\n";
+
+
         camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
-        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         blockManager.Update(dt);
+        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         playerGrounded = player.isGrounded;
         player.Update(dt);
         walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
@@ -98,7 +111,7 @@ int main()
         fakePlayerShape = player.Bounds;
 
         //Draw
-        window.clear();
+        window.clear(sf::Color::White);
         window.setView(camera);
         blockManager.Draw(window);
         walkLeftAnimation.Draw(window, true);
@@ -131,6 +144,7 @@ int main()
             fakePlayerShape.setTexture(&playerIdle);
             window.draw(fakePlayerShape, &fShader);
         }
+
 
 
         window.display();
