@@ -11,6 +11,7 @@ public:
 	float Gravity;
 	float Friction;
 	float JumpHeight;
+	bool isAlive;
 	bool isGrounded;
 
 	float Top;

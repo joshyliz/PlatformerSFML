@@ -8,7 +8,7 @@ public:
 	sf::RectangleShape Shape;
 	sf::FloatRect Bounds;
 
-	Door(sf::Vector2f Position);
+	Door();
 
 	void OpenDoor(bool open, float dt);
 };

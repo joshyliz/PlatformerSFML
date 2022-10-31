@@ -150,20 +150,21 @@ bool ObjectTouchingRight(sf::RectangleShape shape1, sf::Vector2f shape1Velocity,
 
 //Map Generation And Collsion
 
-void SetBlocks(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], Trigger triggers[], int blocksWidth, int blocksHeight)
+void SetBlocks(sf::Texture& Tmap, BlockManager& blockManager, int blocksWidth, int blocksHeight)
 {
     //Generate map from image
     
     int blockIndex = 0;
+    int lavaIndex = 0;
 
     for (size_t i = 0; i < Tmap.getSize().y; i++)
     {
-        SetBlockStrip(Tmap, blocks, ablocks, triggers, blocksWidth, blocksWidth, i, blockIndex);
+        SetBlockStrip(Tmap, blockManager, blocksWidth, blocksWidth, i, blockIndex, lavaIndex);
     }
    
 }
 
-void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], Trigger triggers[], int blocksWidth, int blocksHeight, int y, int& blockIndex)
+void SetBlockStrip(sf::Texture& Tmap, BlockManager& blockManager, int blocksWidth, int blocksHeight, int y, int& blockIndex, int& lavaIndex)
 {
     sf::Image map = Tmap.copyToImage();
     const size_t length = map.getSize().x;
@@ -172,48 +173,62 @@ void SetBlockStrip(sf::Texture& Tmap, Block blocks[], ABlock ablocks[], Trigger 
     {
         auto color = map.getPixel(i, y);
 
+
         if (color == sf::Color::Black)
         {
-            blocks[blockIndex].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
-            blocks[blockIndex].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
-            blocks[blockIndex].Bounds.setPosition(blocks[blockIndex].Position);
+            blockManager.blocks[blockIndex].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
+            blockManager.blocks[blockIndex].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            blockManager.blocks[blockIndex].Bounds.setPosition(blockManager.blocks[blockIndex].Position);
             blockIndex++;
         }
         else if (color == sf::Color(255, 0, 0))
         {
-            ablocks[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
-            ablocks[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
-            ablocks[BlockManager::Red].Bounds.setPosition(ablocks[BlockManager::Red].Position);
+            blockManager.ablocks[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
+            blockManager.ablocks[BlockManager::Red] .Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            blockManager.ablocks[BlockManager::Red].Bounds.setPosition(blockManager.ablocks[BlockManager::Red].Position);
         }
         else if (color == sf::Color(6, 134, 41))
         {
-            ablocks[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
-            ablocks[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
-            ablocks[BlockManager::Green].Bounds.setPosition(ablocks[BlockManager::Green].Position);
+            blockManager.ablocks[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
+            blockManager.ablocks[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            blockManager.ablocks[BlockManager::Green].Bounds.setPosition(blockManager.ablocks[BlockManager::Green].Position);
         }
         else if (color == sf::Color(0, 86, 255))
         {
-            ablocks[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
-            ablocks[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
-            ablocks[BlockManager::Blue].Bounds.setPosition(ablocks[BlockManager::Blue].Position);
+            blockManager.ablocks[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y);
+            blockManager.ablocks[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight));
+            blockManager.ablocks[BlockManager::Blue].Bounds.setPosition(blockManager.ablocks[BlockManager::Blue].Position);
         }
         else if (color == sf::Color(212, 36, 36))
         {
-            triggers[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
-            triggers[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
-            triggers[BlockManager::Red].Bounds.setPosition(triggers[BlockManager::Red].Position);
+            blockManager.triggers[BlockManager::Red].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            blockManager.triggers[BlockManager::Red].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            blockManager.triggers[BlockManager::Red].Bounds.setPosition(blockManager.triggers[BlockManager::Red].Position);
         }
         else if (color == sf::Color(38, 136, 65))
         {
-            triggers[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
-            triggers[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
-            triggers[BlockManager::Green].Bounds.setPosition(triggers[BlockManager::Green].Position);
+            blockManager.triggers[BlockManager::Green].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            blockManager.triggers[BlockManager::Green].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            blockManager.triggers[BlockManager::Green].Bounds.setPosition(blockManager.triggers[BlockManager::Green].Position);
         }
         else if (color == sf::Color(58, 125, 255))
         {
-            triggers[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
-            triggers[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
-            triggers[BlockManager::Blue].Bounds.setPosition(triggers[BlockManager::Blue].Position);
+            blockManager.triggers[BlockManager::Blue].Position = sf::Vector2f(blocksWidth * i, blocksHeight * y - blocksHeight);
+            blockManager.triggers[BlockManager::Blue].Bounds.setSize(sf::Vector2f(blocksWidth, blocksHeight * 2));
+            blockManager.triggers[BlockManager::Blue].Bounds.setPosition(blockManager.triggers[BlockManager::Blue].Position);
+        }
+        else if (color == sf::Color(222, 213, 22))
+        {
+            blockManager.door.Position = sf::Vector2f(blocksWidth * i, blocksWidth * y - blocksHeight);
+            blockManager.door.Shape.setPosition(blockManager.door.Position);
+        }
+        else if (color == sf::Color(240, 114, 24))
+        {
+            blockManager.lavaBlocks[lavaIndex].left = blocksWidth * i;
+            blockManager.lavaBlocks[lavaIndex].top = blocksWidth * y;
+            blockManager.lavaBlocks[lavaIndex].width = blocksWidth;
+            blockManager.lavaBlocks[lavaIndex].height = blocksHeight;
+            lavaIndex++;
         }
 
 
@@ -336,6 +351,35 @@ void ABlockCollision(ABlock& ablock1, ABlock& ablock2)
             ablock2.Veloctiy.x = 0;
         }
 
+    }
+}
+
+void DoorCollision(BlockManager& blockManager, Player& player)
+{
+    if (PlayerTouchingTop(player, blockManager.door.Shape))
+        player.Veloctiy.y = 0;
+
+    if (PlayerTouchingBottom(player, blockManager.door.Shape))
+        player.Veloctiy.y = 0;
+
+    if (PlayerTouchingLeft(player, blockManager.door.Shape))
+        player.Veloctiy.x = 0;
+
+    if (PlayerTouchingRight(player, blockManager.door.Shape))
+        player.Veloctiy.x = 0;
+
+    for (size_t i = 0; i < blockManager.ABLOCK_SIZE; i++)
+    {
+        ABlock* ablock = &blockManager.ablocks[i];
+        
+        if (ObjectTouchingTop(ablock->Bounds, ablock->Veloctiy, blockManager.door.Shape))
+            ablock->Veloctiy.y = 0;
+        if (ObjectTouchingBottom(ablock->Bounds, ablock->Veloctiy, blockManager.door.Shape))
+            ablock->Veloctiy.y = 0;
+        if (ObjectTouchingRight(ablock->Bounds, ablock->Veloctiy, blockManager.door.Shape))
+            ablock->Veloctiy.x = 0;
+        if (ObjectTouchingLeft(ablock->Bounds, ablock->Veloctiy, blockManager.door.Shape))
+            ablock->Veloctiy.x = 0;
     }
 }
 

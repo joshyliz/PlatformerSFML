@@ -2,9 +2,8 @@
 #include "Door.h"
 #include <SFML/Graphics.hpp>
 
-Door::Door(sf::Vector2f Position)
+Door::Door()
 {
-	this->Position = Position;
 	Bounds.width = 64;
 	Bounds.height = 64*2;
 	Shape.setSize(sf::Vector2f(Bounds.width, Bounds.height));

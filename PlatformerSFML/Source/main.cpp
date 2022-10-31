@@ -31,7 +31,7 @@ int main()
     sf::Shader fShader;
     //fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
-    Player player(sf::Vector2f(0, 0), sf::Vector2f(32, 32));
+    Player player(sf::Vector2f(100, 100), sf::Vector2f(32, 32));
     sf::RectangleShape fakePlayerShape = player.Bounds;
     bool playerGrounded = false;
 
@@ -65,8 +65,7 @@ int main()
     bool triggersCheck = false;
     
     //Generate map from image
-    SetBlocks(map, blockManager.blocks, blockManager.ablocks, blockManager.triggers, 64, 64);
-    Door door(sf::Vector2f(100, 100));
+    SetBlocks(map, blockManager, 64, 64);
     
 
     while (window.isOpen())
@@ -106,12 +105,16 @@ int main()
 
         if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
             && blockManager.triggers[BlockManager::Blue].isTriggered == true)
-            door.OpenDoor(true, dt);
+            std::cout << "True\n";
 
 
         camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
         blockManager.Update(dt);
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
+        DoorCollision(blockManager, player);
+
+
+
         playerGrounded = player.isGrounded;
         player.Update(dt);
         walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
@@ -154,7 +157,6 @@ int main()
             window.draw(fakePlayerShape);
         }
 
-        window.draw(door.Shape);
 
         window.display();
     }

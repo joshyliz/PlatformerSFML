@@ -58,5 +58,18 @@ void BlockManager::Draw(sf::RenderWindow& window)
 	{
 		window.draw(triggers[i].Bounds);
 	}
+
+	for (size_t i = 0; i < LAVA_SIZE; i++)
+	{
+		sf::RectangleShape shape;
+		sf::FloatRect lava = lavaBlocks[i];
+
+		shape.setPosition(sf::Vector2f(lava.left, lava.top));
+		shape.setSize(sf::Vector2f(lava.width, lava.height));
+		
+		window.draw(shape);
+	}
+	
+	window.draw(door.Shape);
 	
 }
