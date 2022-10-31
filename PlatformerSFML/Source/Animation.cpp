@@ -26,7 +26,7 @@ void Animation::Update(float dt, bool playerAnimation, sf::Vector2f Position)
 		if (drawRectangle.left == (frameWidth * amountOfFrames) - frameWidth)
 			drawRectangle.left = 0;
 		else drawRectangle.left += frameWidth;
-		
+
 		timer = fps;
 	}
 	else if (playerAnimation == false)

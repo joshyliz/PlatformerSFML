@@ -1,6 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <cmath>
+
+//Defines
+#define WINDOW_WIDTH 1280 //1280
+#define WINDOW_HEIGHT 720 //720
+
 
 //My Headers
 #include "Global.h"
@@ -10,11 +14,12 @@
 #include "BlockManager.h"
 #include "Animation.h"
 #include "Triggers.h"
+#include "Door.h"
 
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Platformer");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Platformer");
     window.setFramerateLimit(60);
 
     float dt;
@@ -48,17 +53,21 @@ int main()
     BlockTex.loadFromFile("Textures\\Block.png");
     sf::Texture ABlockTex;
     ABlockTex.loadFromFile("Textures\\ABlock.png");
-    
+    sf::Texture TriggerTex;
+    TriggerTex.loadFromFile("Textures\\Trigger.png");
+    TriggerTex.setSrgb(false);
 
     //Animations
     Animation walkRightAnimation(walkSpriteSheet, 0.2f, 4);
     Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
 
-    BlockManager blockManager(BlockTex, ABlockTex);
+    BlockManager blockManager(BlockTex, ABlockTex, TriggerTex);
     bool triggersCheck = false;
     
     //Generate map from image
     SetBlocks(map, blockManager.blocks, blockManager.ablocks, blockManager.triggers, 64, 64);
+    Door door(sf::Vector2f(100, 100));
+    
 
     while (window.isOpen())
     {
@@ -97,7 +106,7 @@ int main()
 
         if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
             && blockManager.triggers[BlockManager::Blue].isTriggered == true)
-            std::cout << "True\n";
+            door.OpenDoor(true, dt);
 
 
         camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
@@ -111,7 +120,7 @@ int main()
         fakePlayerShape = player.Bounds;
 
         //Draw
-        window.clear(sf::Color::White);
+        window.clear();
         window.setView(camera);
         blockManager.Draw(window);
         walkLeftAnimation.Draw(window, true);
@@ -142,10 +151,10 @@ int main()
             && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
             fakePlayerShape.setTexture(&playerIdle);
-            window.draw(fakePlayerShape, &fShader);
+            window.draw(fakePlayerShape);
         }
 
-
+        window.draw(door.Shape);
 
         window.display();
     }

@@ -53,7 +53,7 @@ void Player::Update(float dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGrounded == true)
 	{
-		Veloctiy.y -= JumpHeight * dt;
+		Veloctiy.y -= (JumpHeight * dt);
 		isGrounded = false;
 	}
 

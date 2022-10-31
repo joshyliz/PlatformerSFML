@@ -1,111 +1,17 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
+uniform sampler2D texture;
+uniform float x;
+uniform float y;
+uniform float z;
 
-//My Headers
-#include "Global.h"
-#include "Player.h"
-#include "Block.h"
-#include "ABlock.h"
-#include "BlockManager.h"
-
-
-int main()
+void main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Platformer");
-    window.setFramerateLimit(60);
+	vec2 resolution = vec2(1280, 720);
+    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+	vec2 coord = gl_FragCoord.xy / resolution;
 
-    float dt;
-    sf::Clock dtClock;
-   
-    //Fps Timer
-    float timer = 1;
+	vec4 color = vec4(x, y, z, 1);
+	color.r += sin(coord.x * 90.0);
+	color.g += cos(coord.y * 90.0);
 
-
-    sf::Shader fShader;
-
-    Player player(sf::Vector2f(200, 100), sf::Vector2f(50, 50));
-
-    fShader.loadFromFile("fShader.frag", sf::Shader::Fragment);
-    fShader.setUniform("texture", sf::Shader::CurrentTexture);
-
-    sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
-
-    sf::Texture map;
-    map.loadFromFile("Textures\\map.png");
-    player.Bounds.setTexture(&map);
-
-
-    BlockManager blockManager;
-
-    //Generate map from image
-    SetBlocks(map, blockManager.blocks, blockManager.ablocks);
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                window.close();
-        }
-        //Update
-        dt = dtClock.restart().asSeconds();
-        
-        timer -= dt;
-        if (timer < 0)
-        {
-            timer = 1;
-            std::cout << "FPS: " << ceil(1 / dt) << "\n";
-        }
-
-        /* 
-        
-        Poopy Shitty Code
-
-        if (Bottom + playerVelocity.y * dt > floor.getGlobalBounds().top && Right > floor.getGlobalBounds().left && Left < floor.getGlobalBounds().left + floor.getGlobalBounds().width
-            && Top <= floor.getGlobalBounds().top)
-        {
-                   playerVelocity.y = 0;
-        }
-
-        if (Top + playerVelocity.y * dt < fBottom && Bottom > fBottom
-            && Right > floor.getGlobalBounds().left && Left < floor.getGlobalBounds().left + floor.getGlobalBounds().width)
-            playerVelocity.y = 0;
-
-        if (Right + playerVelocity.x * dt > fLeft && Left < fLeft
-            && Bottom > fTop && Top < fBottom)
-            playerVelocity.x = 0;
-
-        if (Left + playerVelocity.x * dt < fRight && Right > fRight 
-            && Bottom > fTop && Top < fBottom)
-            playerVelocity.x = 0;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGrounded == true)
-        {
-            playerVelocity.y = -1100;
-        }
-
-        */
-
-        camera.setCenter(sf::Vector2f(player.Position.x, player.Position.y));
-        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
-        blockManager.Update(dt);
-        player.Update(dt);
-
-        //Draw
-        window.clear(sf::Color::White);
-        window.setView(camera);
-
-        blockManager.Draw(window);
-
-        window.draw(player.Bounds, &fShader);
-
-        window.display();
-    }
-
-    return 0;
+    gl_FragColor =  color * pixel;	
 }
-

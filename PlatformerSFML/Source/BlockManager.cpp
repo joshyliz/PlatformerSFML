@@ -4,7 +4,7 @@
 #include "Block.h"
 #include <iostream>
 
-BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture)
+BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture)
 {
 	for (size_t i = 0; i < BLOCKS_SIZE; i++)
 	{
@@ -14,15 +14,19 @@ BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture
 	ablocks[Red].Bounds.setFillColor(sf::Color::Red);
 	ablocks[Green].Bounds.setFillColor(sf::Color::Green);
 	ablocks[Blue].Bounds.setFillColor(sf::Color::Blue);
-	triggers[Red].Bounds.setFillColor(sf::Color(255, 0, 0, 100));
-	triggers[Green].Bounds.setFillColor(sf::Color(0, 255, 0, 100));
-	triggers[Blue].Bounds.setFillColor(sf::Color(0, 0, 255, 100));
+	triggers[Red].Bounds.setFillColor(sf::Color(255, 0, 0, 255));
+	triggers[Green].Bounds.setFillColor(sf::Color(0, 255, 0, 255));
+	triggers[Blue].Bounds.setFillColor(sf::Color(0, 0, 255, 255));
 
 	for (size_t i = 0; i < ABLOCK_SIZE; i++)
 	{
 		ablocks[i].Bounds.setTexture(&ABlockTexture);
 	}
 
+	for (size_t i = 0; i < TRIGGER_SIZE; i++)
+	{
+		triggers[i].Bounds.setTexture(&TriggerTexture);
+	}
 
 }
 

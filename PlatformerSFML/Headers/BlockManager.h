@@ -10,6 +10,7 @@ public:
 	 Block blocks[1250];
 	 ABlock ablocks[3];
 	 Trigger triggers[3];
+	 sf::FloatRect lavaBlocks[250];
 	 enum ABlockColor
 	 {
 		 Red = 0,
@@ -17,7 +18,7 @@ public:
 		 Blue = 2,
 	 };
 
-	 BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture);
+	 BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture);
 
 	 const short BLOCKS_SIZE = sizeof(blocks) / sizeof(blocks[0]);
 	 const short ABLOCK_SIZE = sizeof(ablocks) / sizeof(ablocks[0]);

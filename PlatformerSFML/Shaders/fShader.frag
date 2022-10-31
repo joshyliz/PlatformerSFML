@@ -6,7 +6,7 @@ uniform float z;
 void main()
 {
 	vec2 resolution = vec2(1280, 720);
-    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy * x);
+    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
 	vec2 coord = gl_FragCoord.xy / resolution;
 
 	vec4 color = vec4(x, y, z, 1);
