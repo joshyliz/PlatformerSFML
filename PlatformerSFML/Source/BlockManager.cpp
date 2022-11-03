@@ -4,12 +4,14 @@
 #include "Block.h"
 #include <iostream>
 
-BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture)
+BlockManager::BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture, sf::Texture& DoorTexture)
 {
 	for (size_t i = 0; i < BLOCKS_SIZE; i++)
 	{
 		blocks[i].Bounds.setTexture(&BlockTexture);
 	}
+
+	door.Shape.setTexture(&DoorTexture);
 
 	ablocks[Red].Bounds.setFillColor(sf::Color::Red);
 	ablocks[Green].Bounds.setFillColor(sf::Color::Green);
@@ -42,7 +44,7 @@ void BlockManager::Update(float dt)
 	triggers[Blue].TriggerCheck(ablocks[Blue].Bounds);
 }
 
-void BlockManager::Draw(sf::RenderWindow& window)
+void BlockManager::Draw(sf::RenderWindow& window, sf::Texture& LavaTexture, sf::Shader& shader)
 {
 	for (size_t i = 0; i < ABLOCK_SIZE; i++)
 	{
@@ -66,8 +68,9 @@ void BlockManager::Draw(sf::RenderWindow& window)
 
 		shape.setPosition(sf::Vector2f(lava.left, lava.top));
 		shape.setSize(sf::Vector2f(lava.width, lava.height));
-		
-		window.draw(shape);
+		shape.setTexture(&LavaTexture);
+
+		window.draw(shape, &shader);
 	}
 	
 	window.draw(door.Shape);

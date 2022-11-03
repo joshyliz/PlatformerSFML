@@ -7,6 +7,7 @@ Player::Player(sf::Vector2f startPosition, sf::Vector2f width_height)
 	Position = startPosition;
 	Bounds.setSize(width_height);
 	Bounds.setPosition(Position);
+	isAlive = true;
 	Speed = 200;
 	Gravity = 50;
 	Friction = 7;
@@ -53,7 +54,7 @@ void Player::Update(float dt)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isGrounded == true)
 	{
-		Veloctiy.y -= (JumpHeight * dt);
+		Veloctiy.y -= JumpHeight * dt;
 		isGrounded = false;
 	}
 
@@ -61,3 +62,4 @@ void Player::Update(float dt)
 	
 	isGrounded = false;
 }
+

@@ -24,14 +24,17 @@ int main()
 
     float dt;
     sf::Clock dtClock;
+    float allTimePassed = 0;
    
     //Fps Timer
     float timer = 1;
 
-    sf::Shader fShader;
-    //fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
-    Player player(sf::Vector2f(100, 100), sf::Vector2f(32, 32));
+    sf::Shader fShader;
+    fShader.setUniform("texture", sf::Shader::CurrentTexture);
+
+
+    Player player(sf::Vector2f(200, 100), sf::Vector2f(32, 32));
     sf::RectangleShape fakePlayerShape = player.Bounds;
     bool playerGrounded = false;
 
@@ -55,13 +58,16 @@ int main()
     ABlockTex.loadFromFile("Textures\\ABlock.png");
     sf::Texture TriggerTex;
     TriggerTex.loadFromFile("Textures\\Trigger.png");
-    TriggerTex.setSrgb(false);
+    sf::Texture LavaTexture;
+    LavaTexture.loadFromFile("Textures\\Lava.png");
+    sf::Texture DoorTexture;
+    DoorTexture.loadFromFile("Textures\\Door.png");
 
     //Animations
     Animation walkRightAnimation(walkSpriteSheet, 0.2f, 4);
     Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
 
-    BlockManager blockManager(BlockTex, ABlockTex, TriggerTex);
+    BlockManager blockManager(BlockTex, ABlockTex, TriggerTex, DoorTexture);
     bool triggersCheck = false;
     
     //Generate map from image
@@ -82,10 +88,9 @@ int main()
         //Update
         dt = dtClock.restart().asSeconds();
 
-        fShader.setUniform("x", sf::Mouse::getPosition().x * 0.001f);
-        fShader.setUniform("y", sf::Mouse::getPosition().y * 0.001f);
-        fShader.setUniform("z", timer);
+        allTimePassed += dt;
 
+        fShader.setUniform("z", allTimePassed * 0.5f);
 
         timer -= dt;
         if (timer < 0)
@@ -105,15 +110,25 @@ int main()
 
         if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
             && blockManager.triggers[BlockManager::Blue].isTriggered == true)
-            std::cout << "True\n";
+            blockManager.door.OpenDoor(true, dt);
 
 
-        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
         blockManager.Update(dt);
         BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
         DoorCollision(blockManager, player);
+        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
 
+        for (size_t i = 0; i < blockManager.LAVA_SIZE; i++)
+        {
+            if (player.Bounds.getGlobalBounds().intersects(blockManager.lavaBlocks[i]))
+                player.isAlive = false;
+        }
 
+        if (player.isAlive == false)
+        {
+            player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+            player.isAlive = true;
+        }
 
         playerGrounded = player.isGrounded;
         player.Update(dt);
@@ -125,7 +140,7 @@ int main()
         //Draw
         window.clear();
         window.setView(camera);
-        blockManager.Draw(window);
+        blockManager.Draw(window, LavaTexture, fShader);
         walkLeftAnimation.Draw(window, true);
         walkRightAnimation.Draw(window, false);
 

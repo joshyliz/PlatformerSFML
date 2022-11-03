@@ -219,7 +219,7 @@ void SetBlockStrip(sf::Texture& Tmap, BlockManager& blockManager, int blocksWidt
         }
         else if (color == sf::Color(222, 213, 22))
         {
-            blockManager.door.Position = sf::Vector2f(blocksWidth * i, blocksWidth * y - blocksHeight);
+            blockManager.door.Position = sf::Vector2f(blocksWidth * i, blocksWidth * y - blocksHeight * 2);
             blockManager.door.Shape.setPosition(blockManager.door.Position);
         }
         else if (color == sf::Color(240, 114, 24))
@@ -229,6 +229,13 @@ void SetBlockStrip(sf::Texture& Tmap, BlockManager& blockManager, int blocksWidt
             blockManager.lavaBlocks[lavaIndex].width = blocksWidth;
             blockManager.lavaBlocks[lavaIndex].height = blocksHeight;
             lavaIndex++;
+        }
+        else if (color == sf::Color(54, 202, 15))
+        {
+            blockManager.respawnPoint.height = blocksWidth;
+            blockManager.respawnPoint.width = blocksHeight;
+            blockManager.respawnPoint.left = i * blocksWidth;
+            blockManager.respawnPoint.top = y * blocksHeight;
         }
 
 

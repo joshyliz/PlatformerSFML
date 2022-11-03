@@ -11,6 +11,7 @@ public:
 	 ABlock ablocks[3];
 	 Trigger triggers[3];
 	 Door door;
+	 sf::FloatRect respawnPoint;
 	 sf::FloatRect lavaBlocks[250];
 	 enum ABlockColor
 	 {
@@ -19,7 +20,7 @@ public:
 		 Blue = 2,
 	 };
 
-	 BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture);
+	 BlockManager(sf::Texture& BlockTexture, sf::Texture& ABlockTexture, sf::Texture& TriggerTexture, sf::Texture& DoorTexture);
 
 	 const short BLOCKS_SIZE = sizeof(blocks) / sizeof(blocks[0]);
 	 const short ABLOCK_SIZE = sizeof(ablocks) / sizeof(ablocks[0]);
@@ -28,5 +29,5 @@ public:
 
 	 void Update(float dt);
 
-	 void Draw(sf::RenderWindow& window);
+	 void Draw(sf::RenderWindow& window, sf::Texture& LavaTexture, sf::Shader& shader);
 };

@@ -5,7 +5,7 @@
 Door::Door()
 {
 	Bounds.width = 64;
-	Bounds.height = 64*2;
+	Bounds.height = 64*3;
 	Shape.setSize(sf::Vector2f(Bounds.width, Bounds.height));
 }
 
