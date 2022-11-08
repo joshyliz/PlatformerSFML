@@ -34,6 +34,7 @@ void Player::Update(float dt)
 	Left = Position.x;
 	Right = Position.x + GetWidth();
 
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		Veloctiy.x = -Speed * dt;
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))

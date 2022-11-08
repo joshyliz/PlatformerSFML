@@ -33,6 +33,12 @@ int main()
     sf::Shader fShader;
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
+    sf::FloatRect PlayBounds;
+    PlayBounds.width = 64 * 50;
+    PlayBounds.height = 64 * 25;
+    bool levelComplete = false;
+    bool isInLevel = false;
+
 
     Player player(sf::Vector2f(200, 100), sf::Vector2f(32, 32));
     sf::RectangleShape fakePlayerShape = player.Bounds;
@@ -64,8 +70,8 @@ int main()
     DoorTexture.loadFromFile("Textures\\Door.png");
 
     //Animations
-    Animation walkRightAnimation(walkSpriteSheet, 0.2f, 4);
-    Animation walkLeftAnimation(walkSpriteSheet, 0.2f, 4);
+    Animation walkRightAnimation(walkSpriteSheet, 0.17f, 4);
+    Animation walkLeftAnimation(walkSpriteSheet, 0.17f, 4);
 
     BlockManager blockManager(BlockTex, ABlockTex, TriggerTex, DoorTexture);
     bool triggersCheck = false;
@@ -108,15 +114,10 @@ int main()
 
         zoom = 1;
 
-        if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
-            && blockManager.triggers[BlockManager::Blue].isTriggered == true)
-            blockManager.door.OpenDoor(true, dt);
-
-
-        blockManager.Update(dt);
-        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
-        DoorCollision(blockManager, player);
-        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
+        if (!player.Bounds.getGlobalBounds().intersects(PlayBounds))
+        {
+            levelComplete = true;
+        }
 
         for (size_t i = 0; i < blockManager.LAVA_SIZE; i++)
         {
@@ -129,6 +130,16 @@ int main()
             player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
             player.isAlive = true;
         }
+
+        if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
+            && blockManager.triggers[BlockManager::Blue].isTriggered == true)
+            blockManager.door.OpenDoor(true, dt);
+
+
+        blockManager.Update(dt);
+        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
+        DoorCollision(blockManager, player);
+        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
 
         playerGrounded = player.isGrounded;
         player.Update(dt);
