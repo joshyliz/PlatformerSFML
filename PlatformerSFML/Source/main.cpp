@@ -33,11 +33,20 @@ int main()
     sf::Shader fShader;
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
+    //Game Stuff
     sf::FloatRect PlayBounds;
     PlayBounds.width = 64 * 50;
     PlayBounds.height = 64 * 25;
     bool levelComplete = false;
-    bool isInLevel = false;
+
+    
+    enum GameState { Playing, StartMenu, LevelSelect };
+    enum Level { One, Two, Three, Four, Five };
+
+    GameState state = StartMenu;
+    Level level;
+
+    sf::Vector2f MousePos;
 
 
     Player player(sf::Vector2f(200, 100), sf::Vector2f(32, 32));
@@ -50,8 +59,26 @@ int main()
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
     float zoom = 1;
 
-    sf::Texture map;
-    map.loadFromFile("Textures\\map.png");
+
+    //Level Textures
+    sf::Texture map1;
+    map1.loadFromFile("Textures\\map1.png");
+
+    sf::Texture map2;
+    map2.loadFromFile("Textures\\map2.png");
+
+
+    sf::Texture map3;
+    map3.loadFromFile("Textures\\map3.png");
+
+
+    sf::Texture map4;
+    map4.loadFromFile("Textures\\map4.png");
+
+
+    sf::Texture map5;
+    map5.loadFromFile("Textures\\map5.png");
+
 
     //Textures
     sf::Texture playerIdle;
@@ -68,16 +95,44 @@ int main()
     LavaTexture.loadFromFile("Textures\\Lava.png");
     sf::Texture DoorTexture;
     DoorTexture.loadFromFile("Textures\\Door.png");
+    sf::Texture MainMenuTexture;
+    MainMenuTexture.loadFromFile("Textures\\HomeScreen.png");
+    sf::Texture SpinSpriteSheet;
+    SpinSpriteSheet.loadFromFile("Textures\\SpinGuy.png");
+    sf::Texture BackGround;
+    BackGround.loadFromFile("Textures\\BackRound.png");
+
+    //Audios
+
+    //UI
+    sf::Sprite Back;
+    Back.setTexture(BackGround);
+
+    sf::Sprite MainMenu;
+    MainMenu.setTexture(MainMenuTexture);
+    MainMenu.setPosition(VectorZero());
+    sf::FloatRect PlayButton;
+    sf::FloatRect QuitButton;
+    PlayButton.width = 64 * 2;
+    PlayButton.height = 64;
+    QuitButton.width = 64 * 2;
+    QuitButton.height = 64;
+
+    PlayButton.left = 555;
+    PlayButton.top = 442;
+
+    QuitButton.left = 555;
+    QuitButton.top = 570;
+    
+    window.setMouseCursorVisible(false);
 
     //Animations
     Animation walkRightAnimation(walkSpriteSheet, 0.17f, 4);
     Animation walkLeftAnimation(walkSpriteSheet, 0.17f, 4);
+    Animation spinAnimation(SpinSpriteSheet, 0.06f, 14);
 
     BlockManager blockManager(BlockTex, ABlockTex, TriggerTex, DoorTexture);
     bool triggersCheck = false;
-    
-    //Generate map from image
-    SetBlocks(map, blockManager, 64, 64);
     
 
     while (window.isOpen())
@@ -93,8 +148,12 @@ int main()
         }
         //Update
         dt = dtClock.restart().asSeconds();
-
         allTimePassed += dt;
+
+        //Caculates Mouse Position
+        MousePos.x = sf::Mouse::getPosition(window).x + camera.getCenter().x - window.getSize().x / 2;
+        MousePos.y = sf::Mouse::getPosition(window).y + camera.getCenter().y - window.getSize().y / 2;
+
 
         fShader.setUniform("z", allTimePassed * 0.5f);
 
@@ -114,78 +173,183 @@ int main()
 
         zoom = 1;
 
-        if (!player.Bounds.getGlobalBounds().intersects(PlayBounds))
+        // UI
+        
+
+        //Main Menu
+
+        if (state == StartMenu)
         {
-            levelComplete = true;
+            camera = window.getDefaultView();
+
+            if (QuitButton.contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                window.close();
+
+            if (PlayButton.contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                state = LevelSelect;
+            }
+            
         }
 
-        for (size_t i = 0; i < blockManager.LAVA_SIZE; i++)
+        //Map Gen
+        if (state == LevelSelect)
         {
-            if (player.Bounds.getGlobalBounds().intersects(blockManager.lavaBlocks[i]))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+            {
                 player.isAlive = false;
-        }
+                SetBlocks(map1, blockManager, 64, 64);
+                state = Playing;
+            }
 
-        if (player.isAlive == false)
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+            {
+                player.isAlive = false;
+                SetBlocks(map2, blockManager, 64, 64);
+                state = Playing;
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+            {
+                player.isAlive = false;
+                SetBlocks(map3, blockManager, 64, 64);
+                state = Playing;
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
+            {
+                player.isAlive = false;
+                SetBlocks(map4, blockManager, 64, 64);
+                state = Playing;
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
+            {
+                player.isAlive = false;
+                SetBlocks(map5, blockManager, 64, 64);
+                state = Playing;
+            }
+
+        }
+        
+        //Main Game
+
+        if (state == Playing)
         {
-            player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
-            player.isAlive = true;
+
+
+            if (!player.Bounds.getGlobalBounds().intersects(PlayBounds))
+            {
+                state = LevelSelect;
+            }
+
+            for (size_t i = 0; i < blockManager.LAVA_SIZE; i++)
+            {
+                if (player.Bounds.getGlobalBounds().intersects(blockManager.lavaBlocks[i]))
+                    player.isAlive = false;
+            }
+
+            if (player.isAlive == false)
+            {
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                player.isAlive = true;
+            }
+
+            if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
+                && blockManager.triggers[BlockManager::Blue].isTriggered == true)
+                blockManager.door.OpenDoor(true, dt);
+
+            blockManager.Update(dt);
+            BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
+            DoorCollision(blockManager, player);
+            camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
+
+            playerGrounded = player.isGrounded;
+            player.Update(dt);
+            walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
+            walkLeftAnimation.Update(dt, player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A) && playerGrounded == true, player.Position);
+
+            fakePlayerShape = player.Bounds;
         }
 
-        if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true
-            && blockManager.triggers[BlockManager::Blue].isTriggered == true)
-            blockManager.door.OpenDoor(true, dt);
+        //Caculates Mouse Position
+        MousePos.x = sf::Mouse::getPosition(window).x + camera.getCenter().x - window.getSize().x / 2;
+        MousePos.y = sf::Mouse::getPosition(window).y + camera.getCenter().y - window.getSize().y / 2;
 
-
-        blockManager.Update(dt);
-        BlockCollsion(player, blockManager.blocks, blockManager.BLOCKS_SIZE, blockManager.ablocks, blockManager.ABLOCK_SIZE);
-        DoorCollision(blockManager, player);
-        camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
-
-        playerGrounded = player.isGrounded;
-        player.Update(dt);
-        walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
-        walkLeftAnimation.Update(dt, player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A) && playerGrounded == true, player.Position);
-
-        fakePlayerShape = player.Bounds;
+        //Update Funny Guy
+        spinAnimation.Update(dt, true, sf::Vector2f(MousePos.x - 35 / 2, MousePos.y - 35 / 2));
 
         //Draw
         window.clear();
         window.setView(camera);
-        blockManager.Draw(window, LavaTexture, fShader);
-        walkLeftAnimation.Draw(window, true);
-        walkRightAnimation.Draw(window, false);
 
-        if (playerGrounded == false && player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        {
-            fakePlayerShape.setTexture(&walkSpriteSheet);
-            fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
-            window.draw(fakePlayerShape);
-        }
-        else if (playerGrounded == false && player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            fakePlayerShape.setTexture(&walkSpriteSheet);
-            fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
-            fakePlayerShape.setScale(sf::Vector2f(-1, 1));
-            fakePlayerShape.setPosition(sf::Vector2f(fakePlayerShape.getPosition().x + 32, fakePlayerShape.getPosition().y));
+        //UI
 
-            window.draw(fakePlayerShape);
-        }
-        else if (playerGrounded == false && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-            && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        //Main Menu
+
+        if (state == StartMenu)
         {
-            fakePlayerShape.setTexture(&playerIdle);
-            window.draw(fakePlayerShape);
-        }
-        else if (playerGrounded == true && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-            && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        {
-            fakePlayerShape.setTexture(&playerIdle);
-            window.draw(fakePlayerShape);
+            window.draw(MainMenu);
         }
 
+        //Game Elements
+
+        if (state == Playing)
+        {
+            for (size_t i = 0; i < 100; i++)
+            {
+                for (size_t j = 0; j < 50; j++)
+                {
+                    Back.setPosition(32 * i, 32 * j);
+                    window.draw(Back);
+                }
+            }
+
+            blockManager.Draw(window, LavaTexture, fShader);
+            walkLeftAnimation.Draw(window, true);
+            walkRightAnimation.Draw(window, false);
+
+            if (playerGrounded == false && player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            {
+                fakePlayerShape.setTexture(&walkSpriteSheet);
+                fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
+                window.draw(fakePlayerShape);
+            }
+            else if (playerGrounded == false && player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            {
+                fakePlayerShape.setTexture(&walkSpriteSheet);
+                fakePlayerShape.setTextureRect(sf::IntRect(32, 0, 32, 32));
+                fakePlayerShape.setScale(sf::Vector2f(-1, 1));
+                fakePlayerShape.setPosition(sf::Vector2f(fakePlayerShape.getPosition().x + 32, fakePlayerShape.getPosition().y));
+
+                window.draw(fakePlayerShape);
+            }
+            else if (playerGrounded == false && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+                && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            {
+                fakePlayerShape.setTexture(&playerIdle);
+                window.draw(fakePlayerShape);
+            }
+            else if (playerGrounded == true && !sf::Keyboard::isKeyPressed(sf::Keyboard::D)
+                && !sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            {
+                fakePlayerShape.setTexture(&playerIdle);
+                window.draw(fakePlayerShape);
+            }
+
+        }
+
+
+        //Draw Funny Guy
+        spinAnimation.Draw(window, false);
 
         window.display();
     }
 
     return 0;
 }
+
+
+
+
+
