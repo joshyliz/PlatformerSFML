@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 //Defines
@@ -102,7 +103,12 @@ int main()
     sf::Texture BackGround;
     BackGround.loadFromFile("Textures\\BackRound.png");
 
-    //Audios
+    //Audio
+    sf::SoundBuffer MushroomBuff;
+    MushroomBuff.loadFromFile("Sounds\\Mushroom.wav");
+    sf::Sound Mushroom;
+    Mushroom.setBuffer(MushroomBuff);
+    Mushroom.play();
 
     //UI
     sf::Sprite Back;
