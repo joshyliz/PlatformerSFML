@@ -175,6 +175,27 @@
     <ClInclude Include="Headers\Player.h" />
     <ClInclude Include="Headers\Triggers.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sounds\Mushroom.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\ABlock.png" />
+    <Image Include="Textures\BackRound.png" />
+    <Image Include="Textures\Block.png" />
+    <Image Include="Textures\Door.png" />
+    <Image Include="Textures\HomeScreen.png" />
+    <Image Include="Textures\Lava.png" />
+    <Image Include="Textures\LevelSelect.png" />
+    <Image Include="Textures\LittleGuyIdle.png" />
+    <Image Include="Textures\LittleWalkAnim.png" />
+    <Image Include="Textures\map1.png" />
+    <Image Include="Textures\map2.png" />
+    <Image Include="Textures\map3.png" />
+    <Image Include="Textures\map4.png" />
+    <Image Include="Textures\map5.png" />
+    <Image Include="Textures\SpinGuy.png" />
+    <Image Include="Textures\Trigger.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

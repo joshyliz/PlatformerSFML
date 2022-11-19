@@ -110,4 +110,59 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sounds\Mushroom.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\ABlock.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\BackRound.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Block.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Door.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\HomeScreen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Lava.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\LevelSelect.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\LittleGuyIdle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\LittleWalkAnim.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\map5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\SpinGuy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Trigger.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

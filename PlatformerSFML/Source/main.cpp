@@ -58,7 +58,6 @@ int main()
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
-    float zoom = 1;
 
 
     //Level Textures
@@ -102,13 +101,15 @@ int main()
     SpinSpriteSheet.loadFromFile("Textures\\SpinGuy.png");
     sf::Texture BackGround;
     BackGround.loadFromFile("Textures\\BackRound.png");
+    sf::Texture LevelSelectTex;
+    LevelSelectTex.loadFromFile("Textures\\LevelSelect.png");
+    
 
     //Audio
     sf::SoundBuffer MushroomBuff;
     MushroomBuff.loadFromFile("Sounds\\Mushroom.wav");
     sf::Sound Mushroom;
     Mushroom.setBuffer(MushroomBuff);
-    Mushroom.play();
 
     //UI
     sf::Sprite Back;
@@ -117,6 +118,19 @@ int main()
     sf::Sprite MainMenu;
     MainMenu.setTexture(MainMenuTexture);
     MainMenu.setPosition(VectorZero());
+
+    sf::Sprite Level;
+    Level.setTexture(LevelSelectTex);
+    Level.setPosition(VectorZero());
+
+    sf::FloatRect CornerGuy;
+    CornerGuy.width = 31;
+    CornerGuy.height = 15;
+    CornerGuy.left = window.getSize().x - 31;
+    CornerGuy.top = window.getSize().y - 15;
+
+
+
     sf::FloatRect PlayButton;
     sf::FloatRect QuitButton;
     PlayButton.width = 64 * 2;
@@ -131,6 +145,29 @@ int main()
     QuitButton.top = 570;
     
     window.setMouseCursorVisible(false);
+
+    sf::FloatRect SelectBlocks[5];
+    sf::FloatRect BackButton;
+
+    for (size_t i = 0; i < 5; i++)
+    {
+        SelectBlocks[i].width = 256;
+        SelectBlocks[i].height = 256;
+    }
+
+    SelectBlocks[1].left = 256 * 2;
+
+    SelectBlocks[2].left = 256 * 4;
+
+    SelectBlocks[3].left = 256;
+    SelectBlocks[3].top = 256;
+
+    SelectBlocks[4].left = 256 * 3;
+    SelectBlocks[4].top = 256;
+
+    BackButton.width = 188;
+    BackButton.height = 137;
+    BackButton.top = window.getSize().y - BackButton.height;
 
     //Animations
     Animation walkRightAnimation(walkSpriteSheet, 0.17f, 4);
@@ -147,9 +184,6 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close();
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 window.close();
         }
         //Update
@@ -170,14 +204,7 @@ int main()
             std::cout << "FPS: " << ceil(1 / dt) << "\n";            
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            zoom -= 1 * dt;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            zoom += 1 * dt;
 
-        camera.zoom(zoom);
-
-        zoom = 1;
 
         // UI
         
@@ -201,35 +228,43 @@ int main()
         //Map Gen
         if (state == LevelSelect)
         {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+            camera = window.getDefaultView();
+
+            if (BackButton.contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                state = StartMenu;
+            
+            if (CornerGuy.contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                Mushroom.play();
+
+            if (SelectBlocks[0].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 player.isAlive = false;
                 SetBlocks(map1, blockManager, 64, 64);
                 state = Playing;
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+            if (SelectBlocks[1].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 player.isAlive = false;
                 SetBlocks(map2, blockManager, 64, 64);
                 state = Playing;
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+            if (SelectBlocks[2].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 player.isAlive = false;
                 SetBlocks(map3, blockManager, 64, 64);
                 state = Playing;
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
+            if (SelectBlocks[3].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 player.isAlive = false;
                 SetBlocks(map4, blockManager, 64, 64);
                 state = Playing;
             }
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
+            if (SelectBlocks[4].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 player.isAlive = false;
                 SetBlocks(map5, blockManager, 64, 64);
@@ -242,6 +277,8 @@ int main()
 
         if (state == Playing)
         {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                state = LevelSelect;
 
 
             if (!player.Bounds.getGlobalBounds().intersects(PlayBounds))
@@ -296,6 +333,12 @@ int main()
         if (state == StartMenu)
         {
             window.draw(MainMenu);
+        }
+
+        //Level Select
+        if (state == LevelSelect)
+        {
+            window.draw(Level);
         }
 
         //Game Elements
