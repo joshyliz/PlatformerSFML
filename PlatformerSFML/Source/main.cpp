@@ -123,7 +123,11 @@ int main()
     ThudBuff.loadFromFile("Sounds\\Thud.wav");
     sf::Sound Thud;
     Thud.setBuffer(ThudBuff);
-
+    sf::SoundBuffer DeathBuff;
+    DeathBuff.loadFromFile("Sounds\\Death.wav");
+    sf::Sound Death;
+    Death.setBuffer(DeathBuff);
+    Death.setVolume(30);
 
     //UI
     sf::Sprite Back;
@@ -253,41 +257,46 @@ int main()
             if (SelectBlocks[0].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 ResetManager(&blockManager);
-                player.isAlive = false;
                 SetBlocks(map1, blockManager, 64, 64);
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
                 state = Playing;
+                level = One;
             }
 
             if (SelectBlocks[1].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 ResetManager(&blockManager);
-                player.isAlive = false;
                 SetBlocks(map2, blockManager, 64, 64);
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
                 state = Playing;
+                level = Two;
             }
 
             if (SelectBlocks[2].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 ResetManager(&blockManager);
-                player.isAlive = false;
                 SetBlocks(map3, blockManager, 64, 64);
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
                 state = Playing;
+                level = Three;
             }
 
             if (SelectBlocks[3].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 ResetManager(&blockManager);
-                player.isAlive = false;
                 SetBlocks(map4, blockManager, 64, 64);
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
                 state = Playing;
+                level = Four;
             }
 
             if (SelectBlocks[4].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 ResetManager(&blockManager);
-                player.isAlive = false;
+                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
                 SetBlocks(map5, blockManager, 64, 64);
                 state = Playing;
+                level = Five;
             }
 
         }
@@ -313,8 +322,41 @@ int main()
 
             if (player.isAlive == false)
             {
-                player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                Death.play();
                 player.isAlive = true;
+                switch (level)
+                {
+                case One:
+                    ResetManager(&blockManager);
+                    SetBlocks(map1, blockManager, 64, 64);
+                    player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                    break;
+
+                case Two:
+                    ResetManager(&blockManager);
+                    SetBlocks(map2, blockManager, 64, 64);
+                    player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                    break;
+
+                case Three:
+                    ResetManager(&blockManager);
+                    SetBlocks(map3, blockManager, 64, 64);
+                    player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                    break;
+
+                case Four:
+                    ResetManager(&blockManager);
+                    SetBlocks(map4, blockManager, 64, 64);
+                    player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                    break;
+
+                case Five:
+                    ResetManager(&blockManager);
+                    SetBlocks(map5, blockManager, 64, 64);
+                    player.Position = sf::Vector2f(blockManager.respawnPoint.left, blockManager.respawnPoint.top);
+                    break;
+                }
+
             }
 
             if (blockManager.triggers[BlockManager::Red].isTriggered == true && blockManager.triggers[BlockManager::Green].isTriggered == true

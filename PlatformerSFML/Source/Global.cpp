@@ -404,6 +404,7 @@ sf::Vector2f GetCenterBounds(sf::FloatRect rect)
 
 void ResetManager(BlockManager* manager)
 {
+    manager->door.Bounds.height = 64 * 3;
 
     for (size_t i = 0; i < manager->BLOCKS_SIZE; i++)
         manager->blocks[i].Bounds.setPosition(-1000, -1000);
