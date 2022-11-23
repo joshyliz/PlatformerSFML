@@ -334,6 +334,12 @@ void ABlockCollision(ABlock& ablock1, ABlock& ablock2)
         ablock1.Veloctiy.y = 0;
     }
 
+    if (ObjectTouchingTop(ablock2.Bounds, ablock2.Veloctiy, ablock1.Bounds))
+    {
+        ablock2.Veloctiy.y = 0;
+    }
+
+    
     if (ObjectTouchingRight(ablock1.Bounds, ablock1.Veloctiy, ablock2.Bounds))
     {
         if (-ablock1.Veloctiy.x > ablock2.Veloctiy.x)
@@ -393,6 +399,31 @@ void DoorCollision(BlockManager& blockManager, Player& player)
 sf::Vector2f GetCenterBounds(sf::FloatRect rect)
 {
     return sf::Vector2f(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
+
+void ResetManager(BlockManager* manager)
+{
+
+    for (size_t i = 0; i < manager->BLOCKS_SIZE; i++)
+        manager->blocks[i].Bounds.setPosition(-1000, -1000);
+
+    for (size_t i = 0; i < manager->ABLOCK_SIZE; i++)
+        manager->ablocks[i].Bounds.setPosition(-1000, -1000);
+
+    for (size_t i = 0; i < manager->LAVA_SIZE; i++)
+    {
+        manager->lavaBlocks[i].top = -1000;
+        manager->lavaBlocks[i].left = -1000;
+    }
+
+    for (size_t i = 0; i < manager->TRIGGER_SIZE; i++)
+        manager->triggers[i].Bounds.setPosition(-1000, -1000);
+
+    manager->door.Position = sf::Vector2f(-1000, -1000);
+
+    manager->respawnPoint.top = -1000;
+    manager->respawnPoint.left = -1000;
 }
 
 

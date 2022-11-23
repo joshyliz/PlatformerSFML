@@ -58,6 +58,11 @@ int main()
     fShader.setUniform("texture", sf::Shader::CurrentTexture);
 
     sf::View camera(sf::Vector2f(0, 0), sf::Vector2f(window.getSize().x, window.getSize().y));
+    
+    //Sound Timings
+    bool jumpDown = false;
+    bool fallDown = false;
+    float thudTimer = 0.25f;
 
 
     //Level Textures
@@ -110,6 +115,15 @@ int main()
     MushroomBuff.loadFromFile("Sounds\\Mushroom.wav");
     sf::Sound Mushroom;
     Mushroom.setBuffer(MushroomBuff);
+    sf::SoundBuffer JumpBuff;
+    JumpBuff.loadFromFile("Sounds\\Jump.wav");
+    sf::Sound Jump;
+    Jump.setBuffer(JumpBuff);
+    sf::SoundBuffer ThudBuff;
+    ThudBuff.loadFromFile("Sounds\\Thud.wav");
+    sf::Sound Thud;
+    Thud.setBuffer(ThudBuff);
+
 
     //UI
     sf::Sprite Back;
@@ -128,7 +142,6 @@ int main()
     CornerGuy.height = 15;
     CornerGuy.left = window.getSize().x - 31;
     CornerGuy.top = window.getSize().y - 15;
-
 
 
     sf::FloatRect PlayButton;
@@ -210,7 +223,6 @@ int main()
         
 
         //Main Menu
-
         if (state == StartMenu)
         {
             camera = window.getDefaultView();
@@ -225,6 +237,8 @@ int main()
             
         }
 
+
+
         //Map Gen
         if (state == LevelSelect)
         {
@@ -238,6 +252,7 @@ int main()
 
             if (SelectBlocks[0].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                ResetManager(&blockManager);
                 player.isAlive = false;
                 SetBlocks(map1, blockManager, 64, 64);
                 state = Playing;
@@ -245,6 +260,7 @@ int main()
 
             if (SelectBlocks[1].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                ResetManager(&blockManager);
                 player.isAlive = false;
                 SetBlocks(map2, blockManager, 64, 64);
                 state = Playing;
@@ -252,6 +268,7 @@ int main()
 
             if (SelectBlocks[2].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                ResetManager(&blockManager);
                 player.isAlive = false;
                 SetBlocks(map3, blockManager, 64, 64);
                 state = Playing;
@@ -259,6 +276,7 @@ int main()
 
             if (SelectBlocks[3].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                ResetManager(&blockManager);
                 player.isAlive = false;
                 SetBlocks(map4, blockManager, 64, 64);
                 state = Playing;
@@ -266,6 +284,7 @@ int main()
 
             if (SelectBlocks[4].contains(MousePos) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                ResetManager(&blockManager);
                 player.isAlive = false;
                 SetBlocks(map5, blockManager, 64, 64);
                 state = Playing;
@@ -308,6 +327,36 @@ int main()
             camera.setCenter(sf::Vector2f(player.Position.x + player.Bounds.getGlobalBounds().width / 2, player.Position.y + player.Bounds.getGlobalBounds().height / 2));
 
             playerGrounded = player.isGrounded;
+
+            //Sound Ques
+            if (playerGrounded == false && jumpDown == false && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+            {
+                Jump.play();
+                jumpDown = true;
+            }
+            else if (playerGrounded == true)
+            {
+                jumpDown = false;
+            }
+            
+            if (playerGrounded == true && fallDown == false)
+            {
+                if (thudTimer < 0)
+                {
+                    thudTimer = 0.25;
+                    Thud.play();
+                }
+
+                fallDown = true;
+            }
+            else if (playerGrounded == false)
+            {
+                fallDown = false;
+            }
+
+            thudTimer -= dt;
+
+
             player.Update(dt);
             walkRightAnimation.Update(dt, player.Veloctiy.x > 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::D) && playerGrounded == true, player.Position);
             walkLeftAnimation.Update(dt, player.Veloctiy.x < 0 && sf::Keyboard::isKeyPressed(sf::Keyboard::A) && playerGrounded == true, player.Position);

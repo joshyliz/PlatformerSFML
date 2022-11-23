@@ -31,3 +31,4 @@ void DoorCollision(BlockManager& blockManager, Player& player);
 
 sf::Vector2f GetCenterBounds(sf::FloatRect rect);
 
+void ResetManager(BlockManager* manager);
